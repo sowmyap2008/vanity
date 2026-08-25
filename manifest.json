@@ -1,7 +1,7 @@
 {
   "name": "Vanity Beauty Inventory",
   "short_name": "Vanity",
-  "description": "Track your beauty products",
+  "description": "Track your beauty products with expiry dates",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f8f4f0",
