@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Vanity">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#d47b9e">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎀 Vanity · beauty inventory (₹)</title>
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+    }
+    body {
+      background: #f8f4f0;
+      color: #2d2a2a;
+      padding: 1.8rem 1.2rem;
+    }
+    .app {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    /* header */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    .logo {
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #f7a1b5, #d47b9e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo i {
+      background: none;
+      -webkit-text-fill-color: #d47b9e;
+      margin-right: 6px;
+    }
+    .actions {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .actions button {
+      background: white;
+      border: none;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 500;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #2d2a2a;
+      border: 1px solid #ede6e0;
+    }
+    .actions button i { color: #b07c8c; }
+    .actions button:hover {
+      background: #fcf5f0;
+      border-color: #d6b8c4;
+      box-shadow: 0 6px 14px rgba(180, 120, 140, 0.08);
+    }
+    /* toolbar */
+    .toolbar {
+      background: white;
+      padding: 1rem 1.8rem;
+      border-radius: 60px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem 1.5rem;
+      margin-bottom: 2.2rem;
+      box-shadow: 0 8px 24px rgba(180, 140, 150, 0.04);
+      border: 1px solid #eee6e0;
+    }
+    .search-box {
+      flex: 2;
+      min-width: 180px;
+      display: flex;
+      align-items: center;
+      background: #f8f4f0;
+      border-radius: 40px;
+      padding: 0.2rem 0.2rem 0.2rem 1.4rem;
+    }
+    .search-box i { color: #b07c8c; }
+    .search-box input {
+      border: none;
+      background: transparent;
+      padding: 0.5rem 0.8rem;
+      width: 100%;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.6rem 1rem;
+    }
+    .filter-group select, .filter-group input {
+      background: #f8f4f0;
+      border: 1px solid #e5dbd4;
+      border-radius: 30px;
+      padding: 0.3rem 1rem 0.3rem 1rem;
+      font-size: 0.8rem;
+      color: #2d2a2a;
+      outline: none;
+      cursor: pointer;
+      min-width: 90px;
+    }
+    .filter-group input[type="number"] { width: 80px; }
+    .clear-filters {
+      background: transparent;
+      border: none;
+      color: #b07c8c;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.2rem 0.6rem;
+    }
+    /* category cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin: 1.8rem 0 2rem;
+    }
+    .category-card {
+      background: white;
+      padding: 1.2rem 0.8rem 1rem;
+      border-radius: 28px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(180, 130, 150, 0.04);
+      border: 1px solid #f0e6e0;
+      transition: 0.2s;
+    }
+    .category-card i {
+      font-size: 2rem;
+      color: #d47b9e;
+      background: #fcf2ef;
+      padding: 0.7rem;
+      border-radius: 30px;
+      margin-bottom: 0.4rem;
+    }
+    .category-card h3 { font-weight: 500; color: #3a2e2e; }
+    .category-card span {
+      font-size: 0.8rem;
+      color: #876e7a;
+      background: #f3e9e5;
+      padding: 0.1rem 1rem;
+      border-radius: 40px;
+    }
+    /* product grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 1.8rem;
+      margin: 2rem 0;
+    }
+    .product-card {
+      background: white;
+      border-radius: 28px;
+      padding: 0.9rem 0.7rem 1.2rem;
+      box-shadow: 0 8px 18px rgba(160, 120, 140, 0.04);
+      border: 1px solid #f0e6e0;
+      transition: 0.15s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-card:hover {
+      border-color: #dbbac8;
+      box-shadow: 0 12px 26px rgba(190, 140, 160, 0.08);
+    }
+    .product-card .fav {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-size: 1.2rem;
+      color: #cfb0be;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    .product-card .fav.active { color: #e85c8a; }
+    .product-card .product-image {
+      width: 100%;
+      height: 110px;
+      background: #f6eeea;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b28b99;
+      font-size: 2.4rem;
+      margin-bottom: 0.4rem;
+    }
+    .product-card .pname {
+      font-weight: 600;
+      font-size: 1rem;
+      margin: 0.1rem 0;
+    }
+    .product-card .brand {
+      font-size: 0.8rem;
+      color: #6b5b5b;
+      margin-bottom: 0.1rem;
+    }
+    .product-card .meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: #5f4b4b;
+      background: #faf4f0;
+      padding: 0.1rem 0.6rem;
+      border-radius: 30px;
+      margin: 0.2rem 0;
+    }
+    .product-card .status {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.8rem;
+      border-radius: 30px;
+      margin-top: 0.2rem;
+      align-self: flex-start;
+    }
+    .status.in-stock { background: #d9edda; color: #1f6d3b; }
+    .status.finished { background: #f0e3e3; color: #7a5a5a; }
+    .status.expired { background: #fce4e4; color: #c62828; }
+    .status.expired::before { content: "⚠️ "; }
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .card-actions i {
+      cursor: pointer;
+      color: #b28b99;
+      transition: 0.1s;
+    }
+    .card-actions i:hover { color: #d47b9e; }
+    /* modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(2px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.2s;
+    }
+    .modal-overlay.open {
+      visibility: visible;
+      opacity: 1;
+    }
+    .modal {
+      background: white;
+      max-width: 480px;
+      width: 92%;
+      padding: 2rem 2rem 1.8rem;
+      border-radius: 48px;
+      box-shadow: 0 40px 70px rgba(0,0,0,0.1);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal h2 { margin-bottom: 1.2rem; font-weight: 400; }
+    .modal .close {
+      position: absolute;
+      top: 14px; right: 20px;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: #ac8b97;
+    }
+    .modal input, .modal select {
+      width: 100%;
+      padding: 0.6rem 1rem;
+      margin: 0.2rem 0 0.9rem;
+      border: 1px solid #e5dbd4;
+      border-radius: 40px;
+      background: #fcf8f5;
+    }
+    .modal .row {
+      display: flex;
+      gap: 0.8rem;
+    }
+    .modal .row > * { flex: 1; }
+    .modal button {
+      background: #d47b9e;
+      border: none;
+      color: white;
+      padding: 0.7rem 1.8rem;
+      border-radius: 60px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 0.2rem;
+      width: 100%;
+    }
+    .input-group {
+      margin-bottom: 0.2rem;
+    }
+    .input-group label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #876e7a;
+      margin-bottom: -0.2rem;
+      letter-spacing: 0.3px;
+    }
+    .input-group label i {
+      margin-right: 4px;
+    }
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 2rem;
+      background: white;
+      padding: 1rem 2rem;
+      border-radius: 60px;
+      border: 1px solid #ede6e0;
+      margin-top: 1.5rem;
+      justify-content: space-around;
+    }
+    .stats div { display: flex; align-items: center; gap: 6px; }
+    .stats i { color: #b07c8c; width: 1.4rem; }
+    .footer-note { text-align: center; color: #b7a09e; font-size: 0.8rem; margin-top: 2rem; }
+    hr { margin: 1.5rem 0; border: 1px solid #eee6e0; }
+    .empty-state { text-align: center; padding: 2.5rem 0; color: #a0828e; }
+    .currency-symbol { font-weight: 500; }
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- header -->
+  <div class="header">
+    <div class="logo"><i class="fas fa-heart"></i> Vanity</div>
+    <div class="actions">
+      <button id="addProductBtn"><i class="fas fa-plus-circle"></i> Add product</button>
+      <button id="toggleFavFilter"><i class="fas fa-star"></i> Favorites</button>
+      <button id="clearAllFilters"><i class="fas fa-filter"></i> Clear</button>
+    </div>
+  </div>
+  <!-- toolbar -->
+  <div class="toolbar">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search name or brand...">
+    </div>
+    <div class="filter-group">
+      <select id="categoryFilter"><option value="">All</option><option>Skin Care</option><option>Hair Care</option><option>Makeup</option><option>Hygiene</option></select>
+      <select id="statusFilter"><option value="">Status</option><option>In Stock</option><option>Finished</option><option>Expired</option></select>
+      <input type="number" id="priceMin" placeholder="Min ₹" min="0" step="1">
+      <input type="number" id="priceMax" placeholder="Max ₹" min="0" step="1">
+      <select id="sortFilter"><option value="newest">Newest</option><option value="oldest">Oldest</option><option value="priceLow">Price ↑</option><option value="priceHigh">Price ↓</option></select>
+      <span class="clear-filters" id="clearFiltersBtn"><i class="fas fa-undo-alt"></i> reset</span>
+    </div>
+  </div>
+
+  <!-- category cards (dynamic) -->
+  <div class="cards-grid" id="categoryGrid">
+    <div class="category-card" data-cat="Skin Care"><i class="fas fa-spa"></i><h3>Skin Care</h3><span>0</span></div>
+    <div class="category-card" data-cat="Hair Care"><i class="fas fa-hand-sparkles"></i><h3>Hair Care</h3><span>0</span></div>
+    <div class="category-card" data-cat="Makeup"><i class="fas fa-paint-brush"></i><h3>Makeup</h3><span>0</span></div>
+    <div class="category-card" data-cat="Hygiene"><i class="fas fa-shower"></i><h3>Hygiene</h3><span>0</span></div>
+  </div>
+
+  <!-- product grid -->
+  <div id="productGrid" class="product-grid"></div>
+
+  <!-- stats -->
+  <div class="stats" id="statsPanel">
+    <div><i class="fas fa-box"></i> Owned: <span id="ownedCount">0</span></div>
+    <div><i class="fas fa-check-circle"></i> In stock: <span id="inStockCount">0</span></div>
+    <div><i class="fas fa-circle"></i> Finished: <span id="finishedCount">0</span></div>
+    <div><i class="fas fa-exclamation-triangle" style="color:#c62828;"></i> Expired: <span id="expiredCount">0</span></div>
+    <div><i class="fas fa-dollar-sign"></i> Collection: ₹<span id="collectionValue">0</span></div>
+    <div><i class="fas fa-history"></i> Total spent: ₹<span id="totalSpent">0</span></div>
+  </div>
+  <hr>
+  <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; font-size:0.9rem; color:#5f4b4b;">
+    <span><i class="fas fa-star" style="color:#e85c8a;"></i> Favorites <span id="favCount">0</span></span>
+    <span><i class="fas fa-tag"></i> Category spending: <span id="catSpending">—</span></span>
+  </div>
+  <div class="footer-note">🎀 Vanity · add your own beauty products (₹)</div>
+</div>
+
+<!-- modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <span class="close" id="modalClose">&times;</span>
+    <h2 id="modalTitle">Add product</h2>
+    
+    <div class="input-group">
+      <label><i class="fas fa-tag"></i> Product Name *</label>
+      <input type="text" id="pName" placeholder="e.g. Face Cream">
+    </div>
+    
+    <div class="input-group">
+      <label><i class="fas fa-building"></i> Brand *</label>
+      <input type="text" id="pBrand" placeholder="e.g. Nivea">
+    </div>
+    
+    <div class="input-group">
+      <label><i class="fas fa-layer-group"></i> Category</label>
+      <select id="pCategory">
+        <option>Skin Care</option>
+        <option>Hair Care</option>
+        <option>Makeup</option>
+        <option>Hygiene</option>
+      </select>
+    </div>
+    
+    <div class="row">
+      <div class="input-group">
+        <label><i class="fas fa-rupee-sign"></i> Price *</label>
+        <input type="number" id="pPrice" placeholder="₹" min="0" step="0.01">
+      </div>
+      <div class="input-group">
+        <label><i class="fas fa-calendar-plus"></i> 📅 Purchase Date *</label>
+        <input type="date" id="pPurchaseDate">
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="input-group">
+        <label><i class="fas fa-calendar-times"></i> ⏳ Expiry Date</label>
+        <input type="date" id="pExpiryDate" placeholder="When does it expire?">
+      </div>
+      <div class="input-group">
+        <label><i class="fas fa-check-double"></i> ✅ Finished On</label>
+        <input type="date" id="pFinishedDate" placeholder="When did you finish it?">
+      </div>
+    </div>
+    
+    <div class="input-group">
+      <label><i class="fas fa-info-circle"></i> Status</label>
+      <select id="pStatus">
+        <option value="In Stock">In Stock</option>
+        <option value="Finished">Finished</option>
+        <option value="Expired">Expired</option>
+      </select>
+    </div>
+    
+    <div class="input-group">
+      <label><i class="fas fa-smile"></i> Image Emoji</label>
+      <input type="text" id="pImage" placeholder="e.g. 🧴" value="🧴">
+    </div>
+    
+    <button id="saveProductBtn"><i class="fas fa-save"></i> Save product</button>
+    <input type="hidden" id="editId" value="">
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- state ----------
+    let products = JSON.parse(localStorage.getItem('vanityProducts')) || [];
+    let nextId = parseInt(localStorage.getItem('vanityNextId')) || 1;
+    let showFavoritesOnly = false;
+
+    // DOM refs
+    const grid = document.getElementById('productGrid');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const priceMin = document.getElementById('priceMin');
+    const priceMax = document.getElementById('priceMax');
+    const sortFilter = document.getElementById('sortFilter');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    const toggleFavBtn = document.getElementById('toggleFavFilter');
+    const clearAllFilters = document.getElementById('clearAllFilters');
+
+    // stats
+    const ownedSpan = document.getElementById('ownedCount');
+    const inStockSpan = document.getElementById('inStockCount');
+    const finishedSpan = document.getElementById('finishedCount');
+    const expiredSpan = document.getElementById('expiredCount');
+    const collectionSpan = document.getElementById('collectionValue');
+    const totalSpentSpan = document.getElementById('totalSpent');
+    const favCountSpan = document.getElementById('favCount');
+    const catSpendingSpan = document.getElementById('catSpending');
+
+    // modal
+    const overlay = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const pName = document.getElementById('pName');
+    const pBrand = document.getElementById('pBrand');
+    const pCategory = document.getElementById('pCategory');
+    const pPrice = document.getElementById('pPrice');
+    const pPurchaseDate = document.getElementById('pPurchaseDate');
+    const pExpiryDate = document.getElementById('pExpiryDate');
+    const pFinishedDate = document.getElementById('pFinishedDate');
+    const pStatus = document.getElementById('pStatus');
+    const pImage = document.getElementById('pImage');
+    const saveBtn = document.getElementById('saveProductBtn');
+    const editId = document.getElementById('editId');
+    const addBtn = document.getElementById('addProductBtn');
+    const closeModal = document.getElementById('modalClose');
+
+    // ---------- helpers ----------
+    function getFilteredProducts() {
+      let list = [...products];
+      const q = searchInput.value.trim().toLowerCase();
+      if (q) list = list.filter(p => p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q));
+      const cat = categoryFilter.value;
+      if (cat) list = list.filter(p => p.category === cat);
+      const st = statusFilter.value;
+      if (st) list = list.filter(p => p.status === st);
+      const min = parseFloat(priceMin.value);
+      const max = parseFloat(priceMax.value);
+      if (!isNaN(min)) list = list.filter(p => p.price >= min);
+      if (!isNaN(max)) list = list.filter(p => p.price <= max);
+      if (showFavoritesOnly) list = list.filter(p => p.favorite);
+      const sort = sortFilter.value;
+      if (sort === 'newest') list.sort((a,b) => new Date(b.purchaseDate) - new Date(a.purchaseDate));
+      else if (sort === 'oldest') list.sort((a,b) => new Date(a.purchaseDate) - new Date(b.purchaseDate));
+      else if (sort === 'priceLow') list.sort((a,b) => a.price - b.price);
+      else if (sort === 'priceHigh') list.sort((a,b) => b.price - a.price);
+      return list;
+    }
+
+    function checkExpiredProducts() {
+      const today = new Date().toISOString().slice(0,10);
+      let updated = false;
+      products.forEach(p => {
+        if (p.expiryDate && p.expiryDate < today && p.status !== 'Finished') {
+          p.status = 'Expired';
+          updated = true;
+        }
+      });
+      if (updated) {
+        localStorage.setItem('vanityProducts', JSON.stringify(products));
+        render();
+      }
+    }
+
+    function render() {
+      const filtered = getFilteredProducts();
+      grid.innerHTML = '';
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="empty-state"><i class="fas fa-archive" style="font-size:2.4rem; opacity:0.4;"></i><p style="margin-top:0.6rem;">No products yet — click "Add product"</p></div>`;
+      } else {
+        filtered.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          const favIcon = p.favorite ? 'fas fa-star active' : 'far fa-star';
+          let statusClass = 'in-stock';
+          if (p.status === 'Finished') statusClass = 'finished';
+          else if (p.status === 'Expired') statusClass = 'expired';
+          card.innerHTML = `
+            <div class="fav ${p.favorite ? 'active' : ''}" data-id="${p.id}"><i class="${favIcon}"></i></div>
+            <div class="product-image">${p.image || '🧴'}</div>
+            <div class="pname">${p.name}</div>
+            <div class="brand">${p.brand}</div>
+            <div class="meta"><span>₹${p.price.toFixed(2)}</span><span>${p.category}</span></div>
+            <div><span class="status ${statusClass}">${p.status}</span></div>
+            <div style="font-size:0.6rem; color:#8f7676; line-height:1.4; margin-top:2px;">
+              📅 Bought: ${p.purchaseDate}
+              ${p.expiryDate ? ' ⏳ Exp: '+p.expiryDate : ''}
+              ${p.finishedDate ? ' ✅ Finished: '+p.finishedDate : ''}
+            </div>
+            <div class="card-actions">
+              <i class="fas fa-pen" data-id="${p.id}" data-action="edit"></i>
+              <i class="fas fa-trash" data-id="${p.id}" data-action="delete"></i>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      // update stats
+      const owned = products.length;
+      const inStock = products.filter(p => p.status === 'In Stock').length;
+      const finished = products.filter(p => p.status === 'Finished').length;
+      const expired = products.filter(p => p.status === 'Expired').length;
+      const collectionVal = products.filter(p => p.status === 'In Stock').reduce((sum, p) => sum + p.price, 0);
+      const totalSpent = products.reduce((sum, p) => sum + p.price, 0);
+      const favCount = products.filter(p => p.favorite).length;
+      ownedSpan.textContent = owned;
+      inStockSpan.textContent = inStock;
+      finishedSpan.textContent = finished;
+      expiredSpan.textContent = expired;
+      collectionSpan.textContent = collectionVal.toFixed(2);
+      totalSpentSpan.textContent = totalSpent.toFixed(2);
+      favCountSpan.textContent = favCount;
+      // category spending
+      const cats = {};
+      products.forEach(p => { cats[p.category] = (cats[p.category] || 0) + p.price; });
+      catSpendingSpan.textContent = Object.entries(cats).map(([k,v]) => `${k}: ₹${v.toFixed(2)}`).join(' · ') || '—';
+      // update category cards count
+      document.querySelectorAll('.category-card').forEach(el => {
+        const cat = el.dataset.cat;
+        const count = products.filter(p => p.category === cat).length;
+        el.querySelector('span').textContent = count;
+      });
+    }
+
+    // ---------- CRUD ----------
+    function openModal(product = null) {
+      if (product) {
+        modalTitle.textContent = '✏️ Edit product';
+        pName.value = product.name;
+        pBrand.value = product.brand;
+        pCategory.value = product.category;
+        pPrice.value = product.price;
+        pPurchaseDate.value = product.purchaseDate;
+        pExpiryDate.value = product.expiryDate || '';
+        pFinishedDate.value = product.finishedDate || '';
+        pStatus.value = product.status;
+        pImage.value = product.image || '🧴';
+        editId.value = product.id;
+      } else {
+        modalTitle.textContent = '➕ Add product';
+        pName.value = ''; pBrand.value = ''; pCategory.value = 'Skin Care'; pPrice.value = '';
+        pPurchaseDate.value = new Date().toISOString().slice(0,10);
+        pExpiryDate.value = '';
+        pFinishedDate.value = '';
+        pStatus.value = 'In Stock';
+        pImage.value = '🧴';
+        editId.value = '';
+      }
+      overlay.classList.add('open');
+    }
+
+    function closeModalFn() { overlay.classList.remove('open'); }
+
+    function saveProduct() {
+      const name = pName.value.trim();
+      const brand = pBrand.value.trim();
+      const category = pCategory.value;
+      const price = parseFloat(pPrice.value);
+      const purchaseDate = pPurchaseDate.value;
+      const expiryDate = pExpiryDate.value || null;
+      const finishedDate = pFinishedDate.value || null;
+      let status = pStatus.value;
+      const image = pImage.value.trim() || '🧴';
+
+      // Auto-check expiry
+      if (expiryDate) {
+        const today = new Date().toISOString().slice(0,10);
+        if (expiryDate < today && status !== 'Finished') {
+          status = 'Expired';
+        }
+      }
+
+      if (!name || !brand || isNaN(price) || !purchaseDate) {
+        alert('Please fill in: Name, Brand, Price, and Purchase date.');
+        return;
+      }
+
+      const id = editId.value ? parseInt(editId.value) : null;
+      if (id) {
+        const idx = products.findIndex(p => p.id === id);
+        if (idx !== -1) {
+          products[idx] = { ...products[idx], name, brand, category, price, purchaseDate, expiryDate, finishedDate, status, image };
+        }
+      } else {
+        products.push({ id: nextId++, name, brand, category, price, purchaseDate, expiryDate, finishedDate, status, image, favorite: false });
+      }
+
+      localStorage.setItem('vanityProducts', JSON.stringify(products));
+      localStorage.setItem('vanityNextId', nextId.toString());
+
+      closeModalFn();
+      render();
+    }
+
+    function deleteProduct(id) {
+      if (confirm('Delete this product?')) {
+        products = products.filter(p => p.id !== id);
+        localStorage.setItem('vanityProducts', JSON.stringify(products));
+        render();
+      }
+    }
+
+    function toggleFavorite(id) {
+      const p = products.find(pr => pr.id === id);
+      if (p) { p.favorite = !p.favorite; localStorage.setItem('vanityProducts', JSON.stringify(products)); render(); }
+    }
+
+    // ---------- event listeners ----------
+    grid.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-id]');
+      if (!target) return;
+      const id = parseInt(target.dataset.id);
+      const action = target.dataset.action;
+      if (action === 'delete') deleteProduct(id);
+      else if (action === 'edit') {
+        const p = products.find(pr => pr.id === id);
+        if (p) openModal(p);
+      } else if (target.classList.contains('fav') || target.closest('.fav')) {
+        toggleFavorite(id);
+      }
+    });
+
+    toggleFavBtn.addEventListener('click', () => {
+      showFavoritesOnly = !showFavoritesOnly;
+      toggleFavBtn.style.background = showFavoritesOnly ? '#f7e1e8' : 'white';
+      render();
+    });
+
+    addBtn.addEventListener('click', () => openModal(null));
+    closeModal.addEventListener('click', closeModalFn);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModalFn(); });
+    saveBtn.addEventListener('click', saveProduct);
+
+    // filters
+    [searchInput, categoryFilter, statusFilter, priceMin, priceMax, sortFilter].forEach(el => {
+      el.addEventListener('input', render);
+      el.addEventListener('change', render);
+    });
+    clearFiltersBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      categoryFilter.value = '';
+      statusFilter.value = '';
+      priceMin.value = '';
+      priceMax.value = '';
+      sortFilter.value = 'newest';
+      showFavoritesOnly = false;
+      toggleFavBtn.style.background = 'white';
+      render();
+    });
+    clearAllFilters.addEventListener('click', () => {
+      searchInput.value = '';
+      categoryFilter.value = '';
+      statusFilter.value = '';
+      priceMin.value = '';
+      priceMax.value = '';
+      sortFilter.value = 'newest';
+      showFavoritesOnly = false;
+      toggleFavBtn.style.background = 'white';
+      render();
+    });
+
+    // initial render and expiry check
+    checkExpiredProducts();
+    setInterval(checkExpiredProducts, 3600000);
+    render();
+  })();
+  // Register service worker for PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js')
+        .then(function(registration) {
+          console.log('Service Worker registered successfully!');
+        })
+        .catch(function(error) {
+          console.log('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
+</body>
+</html>
